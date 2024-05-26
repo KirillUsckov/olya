@@ -15,9 +15,9 @@
 ## MySQL 
 ### Импорт дампа
 1. Открыть MySql CommandLine
-2. Ввести команду ```create database name_of_db;``` Вместо name_of_db вписывается имя базы данных
+2. Ввести команду ```create database name_of_db;``` Вместо `name_of_db` вписывается имя базы данных
 3. Открыть командную строку от мени администратора
-4. Ввести команду ```mysql -u username -p name_of_db < full_path_to_dump``` Вместо username вставляется имя пользователя, вместо name_of_db вписывается имя созданной на шаге 2 базы данных, вместо full_path_to_dump - полный путь к дампу
+4. Ввести команду ```mysql -u username -p name_of_db < full_path_to_dump``` Вместо `username` вставляется имя пользователя, вместо `name_of_db` вписывается имя созданной на шаге 2 базы данных, вместо `full_path_to_dump` - полный путь к дампу
 
 После чего ввести пароль от root
 
