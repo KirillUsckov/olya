@@ -166,33 +166,33 @@ public class DBConnector {
             System.out.println(e.getMessage());
         }
     }
-}
 
-public boolean deletePrice(int priceId) {
-    try {
-        Connection connection;
-        Statement statement = connection.createStatement();
-        return statement.execute(String.format("DELETE from price WHERE Id=%d;", priceId));
-    } catch (SQLException e) {
-        return false;
+
+    public boolean deletePrice(int priceId) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.execute(String.format("DELETE from price WHERE Id=%d;", priceId));
+        } catch (SQLException e) {
+            return false;
+        }
     }
-}
 
-public boolean deletePrice(String priceName) {
-    try {
-        Statement statement = connection.createStatement();
-        return statement.execute(String.format("DELETE from price WHERE Name=\"%s\";", priceName));
-    } catch (SQLException e) {
-        return false;
+    public boolean deletePrice(String priceName) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.execute(String.format("DELETE from price WHERE Name=\"%s\";", priceName));
+        } catch (SQLException e) {
+            return false;
+        }
     }
-}
 
-public boolean updatePrice(Price price) {
-    try {
-        Statement statement = connection.createStatement();
-        return statement.execute(String.format("UPDATE price SET Name = \"%s\" WHERE Id=%d;", price.getName(), price.getId()));
-    } catch (SQLException e) {
-        return false;
+    public boolean updatePrice(Price price) {
+        try {
+            Statement statement = connection.createStatement();
+            return statement.execute(String.format("UPDATE price SET Name = \"%s\" WHERE Id=%d;", price.getName(), price.getId()));
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }
 
