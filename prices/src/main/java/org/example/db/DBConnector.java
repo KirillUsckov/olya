@@ -141,15 +141,17 @@ public class DBConnector {
         }
         return allPrices;
     }
-    public Price selectPrice(String priceName) {
+    public Price selectPrice(int shopId, String priceName) {
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(String.format("SELECT * FROM price WHERE Name = \"%s\";", priceName));
+            ResultSet rs = statement.executeQuery(String.format("SELECT * FROM price WHERE Shop = %d AND Name=\"%s\";", shopId, priceName));
 
             while (rs.next()) {
                 return new Price(
                         rs.getInt("Id"),
-                        rs.getString("Name")
+                        rs.getString("Name"),
+                        rs.getInt("Shop"),
+                        rs.getLong("Price")
                 );
             }
         } catch (SQLException e) {
@@ -158,15 +160,33 @@ public class DBConnector {
         return null;
     }
 
+    public List<Price> selectPrices(int shopId) {
+        List<Price> prices = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(String.format("SELECT * FROM price WHERE Shop = %d;", shopId));
+
+            while (rs.next()) {
+                prices.add(new Price(
+                        rs.getString("Name"),
+                        rs.getInt("Shop"),
+                        rs.getLong("Price")
+                ));
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return prices;
+    }
+
     public void createPrice(Price price) {
         try {
             Statement statement = connection.createStatement();
-            statement.execute(String.format("INSERT INTO price(Name) value (\"%s\");", price.getName()));
+            statement.execute(String.format("INSERT INTO price(Name, Shop, Price) value (\"%s\", %d, %d);", price.getName(), price.getShop(), price.getPrice()));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-
 
     public boolean deletePrice(int priceId) {
         try {
@@ -181,15 +201,6 @@ public class DBConnector {
         try {
             Statement statement = connection.createStatement();
             return statement.execute(String.format("DELETE from price WHERE Name=\"%s\";", priceName));
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    public boolean updatePrice(Price price) {
-        try {
-            Statement statement = connection.createStatement();
-            return statement.execute(String.format("UPDATE price SET Name = \"%s\" WHERE Id=%d;", price.getName(), price.getId()));
         } catch (SQLException e) {
             return false;
         }

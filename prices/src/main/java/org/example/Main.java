@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.db.DBConnector;
 import org.example.model.DBConnection;
+import org.example.model.Price;
 import org.example.model.Shop;
 
 import java.util.List;
@@ -13,7 +14,6 @@ public class Main {
      *  Найти информацию о товарах, продающихся в магазине, название которого введено с клавиатуры
      */
     public static void main(String[] args) {
-
         DBConnector.getInstance().connect();
         UserInterface.setUp();
     }
