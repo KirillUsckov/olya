@@ -14,10 +14,25 @@ public class Price {
     private int shop;
     private long price;
 
+    public Price(String name, int shop, long price) {
+        this.name = name;
+        this.shop = shop;
+        this.price = price;
+    }
+
+    public long getPriceIntPart() {
+        return price / 100;
+    }
+
+    public long getPriceDecimalPart() {
+        return price % 100;
+    }
+    public String getStringPrice() {
+        return String.format("%d,%d", getPriceIntPart(), getPriceDecimalPart());
+    }
+
     @Override
     public String toString() {
-        long fPartOfPrice = price / 100;
-        long lPartOfPrice = price % 100;
-        return String.format("'Name': '%s'; 'shopId' : '%d'; 'price':%d,%d", name, shop, fPartOfPrice, lPartOfPrice);
+        return String.format("'Name': '%s'; 'shopId' : '%d'; 'price':%s", name, shop, getStringPrice());
     }
 }

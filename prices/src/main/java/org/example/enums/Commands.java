@@ -3,9 +3,9 @@ package org.example.enums;
 public enum Commands {
     HELP("help"),
     EXIT("exit"),
-    CREATE_SHOP("create shop"),
-    SHOW_SHOPS("show shops"),
-    DELETE_SHOP("delete shop"),
+    CREATE_PRODUCT("create product"),
+    SHOW_PRODUCTS("show products"),
+    DELETE_PRODUCT("delete product"),
     UNKNOWN_COMMAND("unknown command");
 
     public String stringName;
