@@ -105,6 +105,35 @@ public class UserInterface {
         return null;
     }
 
+
+
+
+    private static void showProducts() {
+        String shopName = scanShopName();
+        if (Objects.isNull(shopName)) {
+            return;
+        }
+        int shopId = DB_CONNECTOR.selectShop(shopName).getId();
+        List<Price> prices = DB_CONNECTOR.selectAllPricesByShopId(shopId);
+        if (prices.isEmpty()) {
+            System.out.println("Товары для этого магазина не были найдены");
+            return;
+        }
+        System.out.println("Вывод списка товаров для магазина");
+
+        for (Price price : prices) {
+            System.out.println(price);
+        }
+    }
+
+    private static void showShops() {
+        System.out.println("Список магазинов");
+        List<Shop> shops = DB_CONNECTOR.selectAllShops();
+        for (Shop shop : shops) {
+            System.out.println(shop);
+        }
+    }
+
     public static String scanProductName() {
         Scanner scanner = new Scanner(System.in);
         for (int i = 0; i < MAX_ATTEMPT_NUMBER; i++) {
@@ -154,32 +183,5 @@ public class UserInterface {
             return Objects.isNull(res) ? "" : res;
         }
         return "";
-    }
-
-
-    private static void showProducts() {
-        String shopName = scanShopName();
-        if (Objects.isNull(shopName)) {
-            return;
-        }
-        int shopId = DB_CONNECTOR.selectShop(shopName).getId();
-        List<Price> prices = DB_CONNECTOR.selectAllPricesByShopId(shopId);
-        if (prices.isEmpty()) {
-            System.out.println("Товары для этого магазина не были найдены");
-            return;
-        }
-        System.out.println("Вывод списка товаров для магазина");
-
-        for (Price price : prices) {
-            System.out.println(price);
-        }
-    }
-
-    private static void showShops() {
-        System.out.println("Список магазинов");
-        List<Shop> shops = DB_CONNECTOR.selectAllShops();
-        for (Shop shop : shops) {
-            System.out.println(shop);
-        }
     }
 }
