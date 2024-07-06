@@ -15,8 +15,9 @@ public class UserInterface {
     private static final int MAX_ATTEMPT_NUMBER = 3;
     private static final DBConnector DB_CONNECTOR = DBConnector.getInstance();
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zа-яА-ЯA-Z ]+$");
-    private static final Pattern PRICE_PATTERN = Pattern.compile("(?<intPrice>^\\d+)((,|.)(?<decimalPrice>\\d{1,2}))?$");//"^\\d+((,|.)\\d{1,2})?$");
-    private static String HELP_COMMAND_TEXT = "\nДоступыне команды:\nhelp - вывод команд\ncreate product - создание продукта\ndelete product - удаление продукта\nshow products - вывод продуктов для определенного магазина\nexit - выход из программы\n";
+    // 1223123.31 intPrice -> 1223123; decimalPrice -> 31
+    private static final Pattern PRICE_PATTERN = Pattern.compile("(?<intPrice>^\\d+)((,|.)(?<decimalPrice>\\d{1,2}))?$");
+    private static final String HELP_COMMAND_TEXT = "\nДоступыне команды:\nhelp - вывод команд\ncreate product - создание продукта\ndelete product - удаление продукта\nshow products - вывод продуктов для определенного магазина\nexit - выход из программы\n";
 
     public static void setUp() {
         Scanner scanner = new Scanner(System.in);
@@ -37,6 +38,7 @@ public class UserInterface {
                     break;
                 case DELETE_PRODUCT:
                     deleteProduct();
+                    break;
                 case EXIT:
                     System.exit(0);
                 case UNKNOWN_COMMAND:
@@ -58,7 +60,7 @@ public class UserInterface {
 
         String productName = scanProductName();
         if (Objects.nonNull(productName)) {
-             Price p = DB_CONNECTOR.selectPrice(shopId, productName);
+            Price p = DB_CONNECTOR.selectPrice(shopId, productName);
             DB_CONNECTOR.deletePrice(p.getId());
         }
         if (Objects.isNull(DB_CONNECTOR.selectPrice(shopId, productName))) {
@@ -89,25 +91,6 @@ public class UserInterface {
         System.out.println("Продукт не был создан.");
     }
 
-    public static String scanShopName() {
-        Scanner scanner = new Scanner(System.in);
-        for (int i = 0; i < MAX_ATTEMPT_NUMBER; i++) {
-            System.out.print("Введите название магазина > ");
-            String shopName = scanner.nextLine();
-            if (Objects.isNull(DB_CONNECTOR.selectShop(shopName))) {
-                System.out.println("Вы ввели несуществующий магазин.");
-                showShops();
-            } else {
-                return shopName;
-            }
-        }
-        System.out.println("Превышено количество попыток ввода.");
-        return null;
-    }
-
-
-
-
     private static void showProducts() {
         String shopName = scanShopName();
         if (Objects.isNull(shopName)) {
@@ -134,6 +117,22 @@ public class UserInterface {
         }
     }
 
+    public static String scanShopName() {
+        Scanner scanner = new Scanner(System.in);
+        for (int i = 0; i < MAX_ATTEMPT_NUMBER; i++) {
+            System.out.print("Введите название магазина > ");
+            String shopName = scanner.nextLine();
+            if (Objects.isNull(DB_CONNECTOR.selectShop(shopName))) {
+                System.out.println("Вы ввели несуществующий магазин.");
+                showShops();
+            } else {
+                return shopName;
+            }
+        }
+        System.out.println("Превышено количество попыток ввода.");
+        return null;
+    }
+
     public static String scanProductName() {
         Scanner scanner = new Scanner(System.in);
         for (int i = 0; i < MAX_ATTEMPT_NUMBER; i++) {
@@ -153,14 +152,18 @@ public class UserInterface {
         for (int i = 0; i < MAX_ATTEMPT_NUMBER; i++) {
             System.out.print("Введите цену продукта > ");
             String productPrice = scanner.nextLine();
+            // 12.3
             if (PRICE_PATTERN.matcher(productPrice).matches()) {
                 String decimalPart = getDecimalPart(productPrice);
                 String intPart = getIntPart(productPrice);
+                // в БД цена хранится в long, где послежние 2 цифры - число копеек
                 while (decimalPart.length() < 2)
                     decimalPart += "0";
+                // intPart = "12"; decimalPart = "30";
+                // return Long.parseLong("1230");
                 return Long.parseLong(intPart + decimalPart);
             } else {
-                System.out.println("Введена неверная цена. Корректный формат 12,33 или 12.33");
+                System.out.println("Введена неверная цена. Корректный формат '12', или '12,33', или '12.33'");
             }
         }
         System.out.println("Превышено количество попыток ввода.");
